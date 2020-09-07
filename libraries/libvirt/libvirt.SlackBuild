@@ -71,6 +71,8 @@ sed -i "s|prefix / 'lib' / 'sysctl.d'|sysconfdir / 'sysctl.d'|" src/remote/meson
 patch -p1 < $CWD/use-virtgroup-in-polkit-rules.diff
 sed -i -e "s,@VIRTGROUP@,$VIRTGROUP,g" src/remote/libvirtd.rules
 
+patch -p0 < $CWD/dnsmasq-no-hosts.patch
+
 # Since 5.10: "configure: error: Build directory must be different from source directory"
 mkdir -p build
 cd build
