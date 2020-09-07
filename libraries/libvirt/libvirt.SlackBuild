@@ -75,6 +75,7 @@ patch -p1 < $CWD/use-virtgroup-in-polkit-rules.diff
 sed -i -e "s,@VIRTGROUP@,$VIRTGROUP,g" src/remote/libvirtd.rules
 
 patch -p1 < $CWD/823a62ec.patch
+patch -p0 < $CWD/dnsmasq-no-hosts.patch
 
 # Since 5.10: "configure: error: Build directory must be different from source directory"
 mkdir -p build

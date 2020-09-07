@@ -1,0 +1,12 @@
+--- src/network/bridge_driver.c.orig	2018-01-12 15:48:37.000000000 +0100
++++ src/network/bridge_driver.c	2018-03-24 19:32:45.436397176 +0100
+@@ -1058,7 +1058,8 @@
+                       "##    virsh net-edit %s\n"
+                       "## or other application using the libvirt API.\n"
+                       "##\n## dnsmasq conf file created by libvirt\n"
+-                      "strict-order\n",
++                      "strict-order\n"
++                      "no-hosts\n",
+                       def->name);
+ 
+     /* if dns is disabled, set its listening port to 0, which
