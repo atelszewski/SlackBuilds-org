@@ -2,8 +2,8 @@
 
 # Slackware build script for Qbs
 
+# Copyright 2021 Andrzej Telszewski, Szczecin
 # Copyright 2014-2017 Nikos Giotis <nikos.giotis@mail.com>
-# Copyright 2020 Andrzej Telszewski, Szczecin
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -26,7 +26,7 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=qbs
-VERSION=${VERSION:-1.16.0}
+VERSION=${VERSION:-1.19.2}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -39,9 +39,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
 if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
   echo "$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE"
   exit 0
@@ -65,7 +62,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -eu
 
 if which qbs &>/dev/null; then
   echo "Found \"qbs\" in PATH."
@@ -92,7 +89,18 @@ patch -p0 < $CWD/corelib-tools.pri.patch
 
 # Adjust docs location.
 
+# **TODO**
+#
+# Move to `patch`.
+#
+
 sed -i "s|share/doc/qbs|doc/qbs-$VERSION|g" doc/doc.pri
+
+# Build Qbs.
+
+# **TODO**
+#
+# Move to `cmake`.
 
 qmake-qt5 qbs.pro                         \
   QMAKE_CXXFLAGS="$SLKCFLAGS"             \
@@ -102,6 +110,11 @@ qmake-qt5 qbs.pro                         \
 
 make
 make install INSTALL_ROOT=$PKG
+
+# **TODO**
+#
+# Move to `qdoc`.
+#
 
 if which qdoc-qt5 &>/dev/null; then
   make docs

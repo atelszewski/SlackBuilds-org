@@ -4,6 +4,7 @@ for any software project, regardless of programming language, toolkit or
 libraries used.
 
 NOTES:
+
 1. Remove any previous Qbs installations before building this package.
 
 2. Sometimes the old Qbs profiles do not work with updated version of
