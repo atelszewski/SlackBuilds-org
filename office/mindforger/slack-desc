@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+          |-----handy-ruler------------------------------------------------------|
+mindforger: mindforger (Thinking Notebook and Markdown Editor)
+mindforger:
+mindforger: MindForger is human mind inspired personal knowledge management tool.
+mindforger: MindForger aims to mimic human mind - learning, recalling,
+mindforger: recognition, associations, forgetting - in order to achieve synergy
+mindforger: with your mind to make your searching, reading and writing more
+mindforger: productive.
+mindforger:
+mindforger: Homepage: https://www.mindforger.com/
+mindforger:
+mindforger:
