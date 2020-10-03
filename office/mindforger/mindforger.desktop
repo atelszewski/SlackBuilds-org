@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=MindForger
+GenericName=Thinking Notebook and Markdown Editor
+Icon=/usr/share/icons/mindforger/mindforger.png
+Exec=mindforger
+MimeType=text/markdown;
+Categories=Office;
