@@ -7,3 +7,8 @@ if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
     /usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
   fi
 fi
+
+if chgrp wireshark usr/bin/dumpcap; then
+  chmod 750 usr/bin/dumpcap
+  setcap cap_net_raw,cap_net_admin=eip usr/bin/dumpcap
+fi
