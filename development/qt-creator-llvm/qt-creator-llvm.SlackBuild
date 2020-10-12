@@ -2,7 +2,7 @@
 
 # Slackware build script for LLVM/Clang tools for Qt Creator
 
-# Copyright 2020 Andrzej Telszewski, Szczecin
+# Copyright 2022 Andrzej Telszewski, Koszalin
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -25,7 +25,8 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=qt-creator-llvm
-VERSION=${VERSION:-13.0.0_d7b669b}
+
+VERSION=${VERSION:-20211026_f37d80d0f6c7}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -38,9 +39,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
 if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
   echo "$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE"
   exit 0
@@ -64,7 +62,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -eu
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -74,11 +72,6 @@ rm -rf $PRGNAM-$VERSION
 tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 
-mv clang-tools-extra clang/tools/extra
-mv clang llvm/tools/clang
-
-cd llvm
-
 chown -R root:root .
 chmod -R a-st,u+rwX,go-w+rX .
 
@@ -86,49 +79,70 @@ chmod -R a-st,u+rwX,go-w+rX .
 # some script development time should one of the files be missing.
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/{clang,clang-tools-extra}
-mkdir -p $PKG/install
 
-cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
-cat $CWD/slack-desc > $PKG/install/slack-desc
+( cd llvm
+  cp -a {CODE_OWNERS,CREDITS,LICENSE,RELEASE_TESTERS}.TXT README.txt \
+    $PKG/usr/doc/$PRGNAM-$VERSION
+)
 
-cp -a CODE_OWNERS.TXT CREDITS.TXT LICENSE.TXT README.txt RELEASE_TESTERS.TXT \
-  $PKG/usr/doc/$PRGNAM-$VERSION
-
-( cd tools/clang
-  cp -a CODE_OWNERS.TXT LICENSE.TXT NOTES.txt README.txt                \
+( cd clang
+  cp -a {CODE_OWNERS,LICENSE}.TXT {NOTES,README}.txt \
     $PKG/usr/doc/$PRGNAM-$VERSION/clang
-  cp -a tools/extra/{CODE_OWNERS.TXT,LICENSE.TXT,README.txt}            \
+)
+
+( cd clang-tools-extra
+  cp -a {CODE_OWNERS,LICENSE}.TXT README.txt \
     $PKG/usr/doc/$PRGNAM-$VERSION/clang-tools-extra
 )
 
-# Build LLVM/Clang proper.
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+INSTALL_PREFIX=/usr/libexec/qtcreator/clang
+PROJECTS="clang;clang-tools-extra"
 
 mkdir -p build
 cd build
-  cmake                                                 \
-    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS"                 \
-    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS"               \
-    -DCMAKE_INSTALL_PREFIX=/usr/libexec/qtcreator/clang \
-    -DLLVM_LIBDIR_SUFFIX=                               \
-    -DCMAKE_BUILD_TYPE=Release                          \
-    -DLLVM_BUILD_LLVM_DYLIB=ON                          \
-    -DLLVM_LINK_LLVM_DYLIB=ON                           \
-    -DLLVM_ENABLE_RTTI=ON                               \
-    -DLLVM_ENABLE_ASSERTIONS=OFF                        \
-    ..
-  make
-  make install DESTDIR=$PKG
+  cmake                                    \
+    -GNinja                                \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS"    \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS"  \
+    -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+    -DLLVM_LIBDIR_SUFFIX=                  \
+    -DLLVM_ENABLE_PROJECTS=$PROJECTS       \
+    -DCMAKE_BUILD_TYPE=Release             \
+    -DLLVM_BUILD_LLVM_DYLIB=ON             \
+    -DLLVM_LINK_LLVM_DYLIB=ON              \
+    -DLLVM_ENABLE_RTTI=ON                  \
+    -DLLVM_ENABLE_ASSERTIONS=OFF           \
+    -DLLVM_BUILD_BENCHMARKS=OFF            \
+    -DLLVM_BUILD_TESTS=OFF                 \
+    -Wno-dev                               \
+    ../llvm
+
+  cmake --build .
+  cmake --install . --prefix=$PKG/$INSTALL_PREFIX
 cd ..
 
-# Remove uneeded components (reduce package size).
-
-find $PKG/usr/libexec/qtcreator/clang/bin -mindepth 1 -not          \
-  \( -name clang  -o -name clang-[0-9]\*    -o -name clang-tidy -o  \
-     -name clangd -o -name llvm-config \) \
-  -exec rm {} \;
-
-rm -rf $PKG/usr/libexec/qtcreator/clang/libexec
-rm -rf $PKG/usr/libexec/qtcreator/clang/share
+# **TODO**
+#
+# Optimize the package:
+#
+# - Remove unneeded components. The official binary _clang_ build from
+#   Qt Creator installer is a correct example of that.
+# - Decide between static and shared linking. Static linking increases
+#   package size, but should give better start-up speed. Dynamic linking
+#   decreases package size at the cost of speed. Take into account the
+#   fact that Qt Creator is moving to _clangd_ (LSP), which probably will
+#   be a long-running background process and the start-up time will not
+#   make much difference, but size saving with dynamic linking will,
+# - Consider using LTO.
+#
+# Additional details for packaging LLVM:
+#
+# - [Building a Distribution of LLVM](https://llvm.org/docs/BuildingADistribution.html)
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
