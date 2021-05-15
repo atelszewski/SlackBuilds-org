@@ -2,8 +2,8 @@
 
 # Slackware build script for SMPlayer
 
+# Copyright 2022 Andrzej Telszewski, Koszalin
 # Copyright 2011-2015  Fridrich von Stauffenberg <cancellor2@gmail.com>
-# Copyright 2020 Andrzej Telszewski, Szczecin
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -42,9 +42,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
 if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
   echo "$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE"
   exit 0
@@ -68,7 +65,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -eu
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -83,15 +80,15 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# Disable -Werror (helps building with the newer gcc)
+# Disable -Werror (helps building with newer GCC).
+
 sed -i "s|-W\ -Wall\ -Werror|-W -Wall|" webserver/Makefile
 
 # Fix man page path.
+
 sed -i "s/share\/man/man/g" Makefile
 
 make \
-  QMAKE=qmake-qt5 \
-  LRELEASE=lrelease-qt5 \
   PREFIX=/usr \
   DOC_PATH="\\\"/usr/doc/$PRGNAM-$VERSION/\\\"" \
   QMAKE_OPTS="QMAKE_CXXFLAGS=\"$SLKCFLAGS\""
@@ -119,8 +116,6 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-sed -i "s/rcc -binary/rcc-qt5 -binary/g" themes/Makefile
-
 make
 make install PREFIX=/usr DESTDIR=$PKG
 
@@ -137,8 +132,6 @@ find -L . \
   -o -perm 511 \) -exec chmod 755 {} \; -o \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
-
-sed -i "s/rcc -binary/rcc-qt5 -binary/g" themes/Makefile
 
 make
 make install PREFIX=/usr DESTDIR=$PKG
