@@ -1,0 +1,2 @@
+OPTIONS="TARGETS=all AUDIODRIVERS=pa KVMGROUP=kvm BRIDGE_HELPER_SETUID=yes"
+ADDREQUIRES="device-tree-compiler libseccomp liburing spice usbredir virglrenderer"
