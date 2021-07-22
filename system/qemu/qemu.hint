@@ -1,0 +1,2 @@
+OPTIONS="TARGETS=all AUDIODRIVERS=pa KVMGROUP=kvm BRIDGE_HELPER_SETUID=yes"
+ADDREQUIRES="spice usbredir virglrenderer virtiofsd"
