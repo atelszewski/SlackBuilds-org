@@ -2,8 +2,8 @@
 
 # Slackware build script for Qt Creator
 
+# Copyright 2021 Andrzej Telszewski, Copenhagen
 # Copyright 2016 Andre Barboza, Belo Horizonte - Brazil
-# Copyright 2020 Andrzej Telszewski, Szczecin
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -24,12 +24,12 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # For building -rc or -beta releases, set VERSION to something like:
-# VERSION=4.2.0_rc1 or VERSION=4.2.0_beta1 (note the underscore).
+# VERSION=4.2.0_rc1 or VERSION=4.2.0_beta1 (use underscore in place of a hyphen).
 
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=qt-creator
-VERSION=${VERSION:-5.0.3}
+VERSION=${VERSION:-6.0.0}
 SRCVER=$(echo $VERSION | tr _ -)
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
@@ -43,9 +43,6 @@ if [ -z "$ARCH" ]; then
   esac
 fi
 
-# If the variable PRINT_PACKAGE_NAME is set, then this script will report what
-# the name of the created package would be, and then exit. This information
-# could be useful to other scripts.
 if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
   echo "$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE"
   exit 0
@@ -69,7 +66,7 @@ else
   LIBDIRSUFFIX=""
 fi
 
-set -e
+set -eu
 
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
@@ -77,13 +74,15 @@ cd $TMP
 
 rm -rf $PRGNAM-$SRCVER
 tar xvf $CWD/$PRGNAM-opensource-src-$SRCVER.tar.gz
-#mv $PRGNAM-opensource-src-$SRCVER $PRGNAM-$SRCVER
+mv $PRGNAM-opensource-src-$SRCVER $PRGNAM-$SRCVER
 cd $PRGNAM-$SRCVER
 
 chown -R root:root .
 chmod -R a-st,u+rwX,go-w+rX .
 
-# Adjust docs location.
+# **TODO**
+#
+# Adjust docs location with a patch and for cmake as opposed to sed and qmake.
 
 sed -i "s|share/doc/qtcreator|doc/$PRGNAM-$VERSION|g"  qtcreator.pri || exit 1
 sed -i "s|share/doc/qtcreator|doc/$PRGNAM-$VERSION|g"  doc/qtcreatordev/src/qtcreator-documentation.qdoc || exit 1
@@ -91,49 +90,70 @@ sed -i "s|share/doc/\${IDE_ID}|doc/$PRGNAM-$VERSION|g" cmake/QtCreatorAPI.cmake 
 
 # LLVM/Clang can be used to extend Qt Creator functionality.
 
-if [ "${USE_LLVM:-no}" = yes ] || [ "${CODE_MODEL:-no}" = "yes" ]; then
-  LLVM_INSTALL_ROOT=/usr/libexec/qtcreator/clang
-  QMAKE_LFLAGS=-L${LLVM_INSTALL_ROOT}/lib
-  export QTC_ENABLE_CLANG_LIBTOOLING=1
+# **TODO**
+#
+# - Ensure that the system-wide LLVM is not used if `USE_LLVM=no`.
+#   Places of interest:
+#
+#   - CMakeLists.txt: LLVM_INSTALL_PREFIX, _llvm_arg
+#   - scripts/build.py
+#
+# - Ensure that system-wide LLVM is not picked up instead of _qt-creator-llvm_.
+#   This might happen if lib paths are not correctly set in binaries.
+# - Find out more about Clang LibTooling in QtC.
 
-  if [ ! -x ${LLVM_INSTALL_ROOT}/bin/clang ]; then
-    echo "error: You must install \"qt-creator-llvm\" package in order to"
-    echo "error: use LLVM/Clang tools integration."
+if [ "${USE_LLVM:-no}" = yes ]; then
+  CMAKE_PREFIX_PATH=/usr/libexec/qtcreator/clang/lib/cmake
+
+  if [ ! -x /usr/libexec/qtcreator/clang/bin/clang ]; then
+    printf "error: You must install \"qt-creator-llvm\" package in order to\n"`
+          `"error: use LLVM/Clang tools integration (USE_LLVM=yes).\n" 1>& 2
 
     exit 1
   fi
 fi
 
-# -Wunguarded-availability-new is not supported.
-
-patch -p0 < $CWD/remove-w-error-unguarded-availability-new.patch
-
-# Tell DEs that Qt Creator supports some more MIME types.
+# Tell DE-s that Qt Creator supports some more MIME types.
 
 patch -p0 < $CWD/add-mime-types.patch
 
-# Fix for https://lists.qt-project.org/pipermail/qt-creator/2019-May/008050.html
+# **TODO**
+#
+# - Test what happens if Qbs is not installed at build time.
+#   Qbs plugin seems to compile, but will it work?
 
-QMAKE_LFLAGS="$QMAKE_LFLAGS -L/usr/lib$LIBDIRSUFFIX"
+mkdir -p build
+cd build
+  cmake                                         \
+    -GNinja                                     \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS"         \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS"       \
+    -DCMAKE_INSTALL_PREFIX=/usr                 \
+    -DCMAKE_INSTALL_LIBDIR=lib$LIBDIRSUFFIX     \
+    -DCMAKE_BUILD_TYPE=Release                  \
+    -DBUILD_QBS:BOOL=OFF                        \
+    -DBUILD_PLUGIN_QBSPROJECTMANAGER:BOOL=ON    \
+    -DBUILD_CPLUSPLUS_TOOLS:BOOL=ON             \
+    -DBUILD_LIBRARY_KSYNTAXHIGHLIGHTING:BOOL=ON \
+    -DWITH_DOCS:BOOL=ON                         \
+    -DBUILD_QCH:BOOL=ON                         \
+    -DBUILD_DEVELOPER_DOCS:BOOL=ON              \
+    -DPYTHON_EXECUTABLE=/usr/bin/python3        \
+    -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH:-}  \
+    -Wno-dev                                    \
+    ..
 
-qmake-qt5 -r qtcreator.pro                 \
-  QMAKE_CXXFLAGS="$SLKCFLAGS"              \
-  QMAKE_LFLAGS="$QMAKE_LFLAGS"             \
-  QTC_PREFIX=/usr                          \
-  IDE_LIBRARY_BASENAME=lib$LIBDIRSUFFIX    \
-  LLVM_INSTALL_DIR=$LLVM_INSTALL_ROOT      \
-  QBS_INSTALL_DIR=/usr                     \
-  DEFINES+=QBS_ENABLE_PROJECT_FILE_UPDATES
+  cmake --build .
+  cmake --install . --prefix=$PKG/usr
+cd ..
 
-make
-make install INSTALL_ROOT=$PKG
-
-if which qdoc-qt5 &>/dev/null; then
-  make docs
-  make install_docs INSTALL_ROOT=$PKG
-else
-  echo "qdoc-qt5 not found.  Docs won't be built nor installed."
-fi
+# **TODO**
+#
+# - Find out if _docs_ are installed.
+# - Remove `usr/bin/qtcreator.sh`?
+# - Find out if _LLVM_ dependent tools are built and installed
+#   (ClangFormat, ClangTools).
+# - Test `cmake` output for missing features.
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
@@ -147,7 +167,7 @@ cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh  > $PKG/install/doinst.sh
+cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE
