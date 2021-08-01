@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+        |-----handy-ruler------------------------------------------------------|
+loudgain: loudgain (ReplayGain 2.0 loudness normalizer)
+loudgain:
+loudgain: loudgain is a loudness normalizer that scans music files and
+loudgain: calculates loudness-normalized gain and loudness peak values
+loudgain: according to the EBU R128 standard, and can optionally write
+loudgain: ReplayGain-compatible metadata.
+loudgain: 
+loudgain: Homepage: https://github.com/Moonbase59/loudgain
+loudgain: 
+loudgain: 
+loudgain:
