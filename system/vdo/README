@@ -1,0 +1,10 @@
+Virtual Data Optimizer (VDO) is a device mapper target that delivers
+block-level deduplication, compression, and thin provisioning.
+
+This package provides the user-space support tools for VDO.
+
+TODO:
+
+- Add note about reason for using -COPR version.
+- Find out whether the _udev_ rule could be used for automating
+  VDO device management. Sources have some example for that.
