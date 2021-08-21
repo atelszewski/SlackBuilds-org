@@ -1,0 +1,2 @@
+OPTIONS="USE_LLVM=yes"
+ADDREQUIRES="qt-creator-llvm"
