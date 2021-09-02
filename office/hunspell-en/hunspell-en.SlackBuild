@@ -56,7 +56,7 @@ rm -rf $PRGNAM-$VERSION
 mkdir -p $PRGNAM-$VERSION
 cd $PRGNAM-$VERSION
 
-for file in hunspell-en_AU-$VERSION.zip hunspell-en_CA-$VERSION.zip hunspell-en_GB-ise-$VERSION.zip hunspell-en_GB-ize-$VERSION.zip hunspell-en_US-$VERSION.zip ; do
+for file in hunspell-{en_AU,en_CA,en_GB-ise,en_GB-ize,en_US}-$VERSION.zip ; do
     unzip $CWD/$file
 done
 
