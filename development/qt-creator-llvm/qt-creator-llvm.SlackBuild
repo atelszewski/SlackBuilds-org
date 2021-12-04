@@ -26,14 +26,7 @@ cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=qt-creator-llvm
 
-# **TODO**
-#
-# Switch to versioning scheme that follows the one used for Qt Creator.
-# The point is that, the sources used to build this LLVM/Clang are obtained
-# from Qt company and are only targeting Qt Creator.
-#
-
-VERSION=${VERSION:-20210420_ada5e67e457e}
+VERSION=${VERSION:-20211026_f37d80d0f6c7}
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -86,10 +79,6 @@ chmod -R a-st,u+rwX,go-w+rX .
 # some script development time should one of the files be missing.
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/{clang,clang-tools-extra}
-mkdir -p $PKG/install
-
-cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
-cat $CWD/slack-desc > $PKG/install/slack-desc
 
 ( cd llvm
   cp -a {CODE_OWNERS,CREDITS,LICENSE,RELEASE_TESTERS}.TXT README.txt \
@@ -106,10 +95,13 @@ cat $CWD/slack-desc > $PKG/install/slack-desc
     $PKG/usr/doc/$PRGNAM-$VERSION/clang-tools-extra
 )
 
-# Build LLVM/Clang.
+cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
+
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
 
 INSTALL_PREFIX=/usr/libexec/qtcreator/clang
-LLVM_PROJECTS="clang;clang-tools-extra"
+PROJECTS="clang;clang-tools-extra"
 
 mkdir -p build
 cd build
@@ -119,7 +111,7 @@ cd build
     -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS"  \
     -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
     -DLLVM_LIBDIR_SUFFIX=                  \
-    -DLLVM_ENABLE_PROJECTS=$LLVM_PROJECTS  \
+    -DLLVM_ENABLE_PROJECTS=$PROJECTS       \
     -DCMAKE_BUILD_TYPE=Release             \
     -DLLVM_BUILD_LLVM_DYLIB=ON             \
     -DLLVM_LINK_LLVM_DYLIB=ON              \
@@ -131,27 +123,26 @@ cd build
     ../llvm
 
   cmake --build .
-  cmake -DCMAKE_INSTALL_PREFIX=$PKG/$INSTALL_PREFIX -P cmake_install.cmake
+  cmake --install . --prefix=$PKG/$INSTALL_PREFIX
 cd ..
 
 # **TODO**
 #
 # Optimize the package:
 #
-# - remove unneeded components. The official binary _clang_ build from
-#   Qt Creator installer is a correct example of that,
-# - decide between static and shared linking. Static linking increases
+# - Remove unneeded components. The official binary _clang_ build from
+#   Qt Creator installer is a correct example of that.
+# - Decide between static and shared linking. Static linking increases
 #   package size, but should give better start-up speed. Dynamic linking
 #   decreases package size at the cost of speed. Take into account the
 #   fact that Qt Creator is moving to _clangd_ (LSP), which probably will
 #   be a long-running background process and the start-up time will not
 #   make much difference, but size saving with dynamic linking will,
-# - consider using LTO.
+# - Consider using LTO.
 #
 # Additional details for packaging LLVM:
 #
 # - [Building a Distribution of LLVM](https://llvm.org/docs/BuildingADistribution.html)
-#
 
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
