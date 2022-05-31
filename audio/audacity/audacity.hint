@@ -1,0 +1,2 @@
+ADDREQUIRES="jack ladspa_sdk soundtouch twolame vamp-plugin-sdk vst3sdk"
+OPTIONS="MANUAL=yes"
