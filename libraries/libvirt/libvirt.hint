@@ -1,0 +1,2 @@
+OPTIONS="VIRTGROUP=kvm"
+ADDREQUIRES="netcat-openbsd"
