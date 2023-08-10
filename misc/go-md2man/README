@@ -1,1 +1,9 @@
 go-md2man generates man pages from markdown documents
+
+**FIXME**
+
+- Update installed docs.
+- Check README against upstream website.
+- Check slack-desc against README.
+- Check build log.
+- Check list of files included in the package.

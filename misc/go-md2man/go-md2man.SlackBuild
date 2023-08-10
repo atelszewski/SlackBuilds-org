@@ -2,7 +2,7 @@
 
 # Slackware build script for go-md2man
 
-# Copyright 2019 Vincent Batts, Raleigh, NC, USA
+# Copyright 2023 Vincent Batts, Raleigh, NC, USA
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -25,8 +25,8 @@
 cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=go-md2man
-VERSION=${VERSION:-1.0.8}
-BUILD=${BUILD:-2}
+VERSION=${VERSION:-2.0.2}
+BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
 
@@ -96,7 +96,7 @@ find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | gr
 
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a \
-  LICENSE.md README.md Gopkg.* \
+  LICENSE.md README.md \
   $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
