@@ -2,8 +2,8 @@
 
 # Slackware build script for podman
 
+# Copyright 2023 Vincent Batts, Raleigh, NC, USA
 # Copyright 2019 Gabriel Diaz, Madrid, Spain
-# Copyright 2019 Vincent Batts, Raleigh, NC, USA
 # All rights reserved.
 #
 # Redistribution and use of this script, with or without modification, is
@@ -27,8 +27,14 @@ cd $(dirname $0) ; CWD=$(pwd)
 
 PRGNAM=podman
 REPONAME=libpod
+<<<<<<< HEAD
 VERSION=${VERSION:-4.7.2}
 GIT_COMMIT="750b4c3a7c31f6573350f0b3f1b787f26e0fe1e3"
+=======
+VERSION=${VERSION:-4.6.0}
+# **FIXME** GIT_COMMIT seems unneccessary
+GIT_COMMIT="38e6fab9664c6e59b66e73523b307a56130316ae"
+>>>>>>> b70ec0e130 (!no-merge,fixme: system/podman: Update to version 4.6.0)
 BUILD=${BUILD:-1}
 TAG=${TAG:-_SBo}
 PKGTYPE=${PKGTYPE:-tgz}
@@ -89,9 +95,26 @@ make install DESTDIR="$PKG" PREFIX="/usr/" MANDIR="/usr/man/" GIT_COMMIT="$GIT_C
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF \
   | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 
+mkdir -p $PKG/etc/containers
+mkdir -p $PKG/etc/containers/secrets
+
+## **FIXME** Remove if /usr/share/containers/seccomp.json is installed by default.
+# Use upstream's default seccomp policy.
+#cp vendor/github.com/containers/common/pkg/seccomp/seccomp.json $PKG/etc/containers/seccomp.json.new
+# Use upstream config, but default to cgroupfs.
+cat vendor/github.com/containers/common/pkg/config/containers.conf \
+  | sed 's/^#*cgroup_manager = "systemd"/cgroup_manager = "cgroupfs"/g' \
+  > $PKG/etc/containers/containers.conf.new
+
+cat $CWD/registries.conf > $PKG/etc/containers/registries.conf.new
+cat $CWD/mounts.conf > $PKG/etc/containers/mounts.conf.new
+cat $CWD/policy.json > $PKG/etc/containers/policy.json.new
+
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 
+# **FIXME** install at least docs/tutorials.
+# In SlackBuild README point to `rootless_tutorial.md`
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a \
   LICENSE README.md \
@@ -102,11 +125,14 @@ mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
 cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
+<<<<<<< HEAD
 mkdir -p $PKG/etc/containers/secrets
 
 cp $CWD/registries.conf $PKG/etc/containers/registries.conf.new
 cp $CWD/mounts.conf $PKG/etc/containers/mounts.conf.new
 cp $CWD/policy.json $PKG/etc/containers/policy.json.new
 
+=======
+>>>>>>> b70ec0e130 (!no-merge,fixme: system/podman: Update to version 4.6.0)
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE

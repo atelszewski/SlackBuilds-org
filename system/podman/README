@@ -1,26 +1,73 @@
-podman - for running OCI-based containers in Pods
+Podman: A tool for managing OCI containers and pods
 
-libpod provides a library for applications looking to use the
-Container Pod concept popularized by Kubernetes. libpod also contains
-a tool called podman for managing Pods, Containers, and Container
-Images.
+Podman (the POD MANager) is a tool for managing containers and images,
+volumes mounted into those containers, and pods made from groups of
+containers. Podman runs containers on Linux, but can also be used on
+Mac and Windows systems using a Podman-managed virtual machine. Podman
+is based on libpod, a library for container lifecycle management.
+The libpod library provides APIs for managing containers, pods,
+container images, and volumes.
 
-At a high level, the scope of libpod and podman is the following:
-* Support multiple image formats including the existing Docker/OCI
-  image formats.
-* Support for multiple means to download images including trust & image
-  verification.
-* Container image management (managing image layers, overlay
-  filesystems, etc).
-* Full management of container lifecycle
-* Support for pods to manage groups of containers together
-* Resource isolation of containers and pods.
+At a high level, the scope of Podman and libpod is the following:
 
-These container runtimes can run as non-root, but require sub-uid/gid
-mappings.
+- Support for multiple container image formats, including OCI and
+  Docker images.
+- Full management of those images, including pulling from various
+  sources (including trust and verification), creating (built via
+  Containerfile or Dockerfile or committed from a container), and
+  pushing to registries and other storage backends.
+- Full management of container lifecycle, including creation (both from
+  an image and from an exploded root filesystem), running, checkpointing
+  and restoring (via CRIU), and removal.
+- Full management of container networking, using Netavark.
+- Support for pods, groups of containers that share resources and are
+  managed together.
+- Support for running containers and pods without root or other elevated
+  privileges.
+- Resource isolation of containers and pods.
+- Support for a Docker-compatible CLI interface, which can both run
+  containers locally and on remote systems.
+- No manager daemon, for improved security and lower resource
+  utilization at idle.
+- Support for a REST API providing both a Docker-compatible interface
+  and an improved interface exposing advanced Podman functionality.
+- Support for running on Windows and Mac via virtual machines run by
+  podman machine.
 
-To run podman as a user:
+**FIXME**
 
-    echo 'user.max_user_namespaces=30111' >> /etc/sysctl.conf
-    echo '<YOUR_USER>:100000:65536' >> /etc/subuid
-    echo '<YOUR_USER>:100000:65536' >> /etc/subgid
+- Add HERE the minimal info about running rootless:
+
+  - Add text explaining what is `rootless`,
+  - Point at documentation: docs/tutorials/rootless_tutorial.md
+  - Provide the minimal instructions to run rootless,
+    that is:
+    
+    ```
+    $ usermod --add-subuids 100000-165535 --add-subgids 100000-165535 johndoe
+    ```
+- .info:
+
+  - Update download link?
+    It now points to `libpod`, but maybe it's possible to point to `podman`?
+
+- .SlackBuild:
+  
+  - Take a look at https://gitlab.archlinux.org/archlinux/packaging/packages/podman
+    Anything to incorporate from it into the .SlackBuild?
+    
+  - Add extra documentation, at least the one from `docs/tutorials`.
+
+- What about configuration files?
+
+  Other distros have the `containers-common` package with these config files,
+  i.e. https://gitlab.archlinux.org/archlinux/packaging/packages/containers-common/-/blob/main/PKGBUILD
+  
+  Consider adding this package as well. If so, config files from this
+  SlackBuild should be removed. `doints.sh` should be cleaned-up
+  as well -- or maybe removed if there are no config files left.
+
+- General:
+
+  - check the generated packages -- what files are there?
+  - check build log for possible issues.
