@@ -60,6 +60,13 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
+SKEL_CONFIG_CHECKSUM=($(md5sum supervisor/skel/sample.conf))
+if [[ "26d67b757f2a9af58f9ecf5c03db6766" != ${SKEL_CONFIG_CHECKSUM} ]]; then
+  printf  'error: Config file "supervisor/skel/sample.conf" has changed.\n'`
+         `'       Ensure that config file provided with the SlackBuild is in sync.\n'
+  exit 1
+fi
+
 python3 setup.py install --root=$PKG
 
 # NOTE:
