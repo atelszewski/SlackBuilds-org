@@ -1,0 +1,2 @@
+OPTIONS="ENABLE_PIC=y"
+ADDREQUIRES="gputils"
