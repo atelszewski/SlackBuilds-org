@@ -1,0 +1,8 @@
+#!/bin/bash
+
+VERSION=${VERSION:-2.55.0}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_SBo}
+
+export BUILD=${BUILD}${TAG}
+. git.SlackBuild.orig
