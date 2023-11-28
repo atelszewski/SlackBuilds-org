@@ -1,0 +1,1 @@
+ADDREQUIRES="recode perl-Cstools perl-Unicode-Map perl-Unicode-Map8"
