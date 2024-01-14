@@ -1,0 +1,1 @@
+ADDREQUIRES="celt libffado zita-alsa-pcmi zita-resampler"
