@@ -1,0 +1,2 @@
+ADDREQUIRES="aom"
+DELREQUIRES="avahi"
