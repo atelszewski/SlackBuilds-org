@@ -1,0 +1,2 @@
+ADDREQUIRES="libilbc libminizip libsmi snappy spandsp"
+GROUPADD="361:wireshark"
