@@ -67,6 +67,8 @@ else
   LIBDIRSUFFIX=""
 fi
 
+removepkg nc
+
 # Exit if netcat is in the system, but not if netcat-openbsd is there (thx ponce)
 if [ -x /usr/bin/nc ] &&  [ ! -h /usr/bin/nc ]; then
   echo "  You must remove nc before installing this!"
