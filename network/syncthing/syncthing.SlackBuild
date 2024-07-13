@@ -62,14 +62,6 @@ OUTPUT=${OUTPUT:-/tmp}
 
 set -e
 
-# Check if the syncthing user and group exist. If not, then bail.
-if [ "$(id -g syncthing 2> /dev/null)" != "307" -o "$(id -u syncthing 2> /dev/null)" != "307" ]; then
-  echo "  You must have an 'syncthing' user and group to run this script."
-  echo "    # groupadd -g 307 syncthing"
-  echo "    # useradd -d /var/lib/syncthing -g syncthing -s /bin/bash -u 307 syncthing"
-  exit 1
-fi
-
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT
 cd $TMP
@@ -89,27 +81,12 @@ find -L . \
 mkdir -p $PKG/usr/bin
 install -Dm755 syncthing $PKG/usr/bin/syncthing
 
-# Install rc script
-mkdir -p $PKG/etc/rc.d
-cat $CWD/rc.syncthing > $PKG/etc/rc.d/rc.syncthing.new
-chmod 0644 $PKG/etc/rc.d/rc.syncthing.new
-
-# Install logrotate script
-mkdir -p $PKG/etc/logrotate.d
-cat $CWD/syncthing.logrotate > $PKG/etc/logrotate.d/syncthing.new
-
-mkdir -p -m 750 $PKG/var/lib/syncthing/config
-mkdir -p -m 750 $PKG/var/log/syncthing
-mkdir -p -m 750 $PKG/var/run/syncthing
-chown -R syncthing:syncthing $PKG/var/{lib,run,log}/syncthing
-
 mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION
 cp -a *.txt $PKG/usr/doc/$PRGNAM-$VERSION
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 
 mkdir -p $PKG/install
 cat $CWD/slack-desc > $PKG/install/slack-desc
-cat $CWD/doinst.sh > $PKG/install/doinst.sh
 
 cd $PKG
 /sbin/makepkg -l y -c n $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE
