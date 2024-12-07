@@ -8,7 +8,7 @@ The installer contains the following components:
 - QEMU guest agent,
 - Windows Virtio drivers.
 
-If the optional dependency p7zip is installed, Windows Virtio drivers
+If the optional dependency 7zip is installed, Windows Virtio drivers
 floppy disk images are packaged too.
 
 The purpose of these images is to provide instant access to the Windows
