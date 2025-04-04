@@ -1,0 +1,11 @@
+JavaFX (aka OpenJFX) is an open source, next generation client app
+platform for desktop, mobile and embedded systems built on Java.
+It allows you to create Java applications with a modern, hardware-
+accelerated user interface that is highly portable.
+JavaFX builds on top of JDK and is a standalone component.
+
+NOTE:
+
+You'll also need a JDK to make use of JavaFX.
+Check https://gluonhq.com/products/javafx/
+for the minimum required version.
