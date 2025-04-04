@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+       |-----handy-ruler------------------------------------------------------|
+openjfx: openjfx (Java OpenJFX client application platform)
+openjfx:
+openjfx: JavaFX (aka OpenJFX) is an open source, next generation client app
+openjfx: platform for desktop, mobile and embedded systems built on Java.
+openjfx: It allows you to create Java applications with a modern, hardware-
+openjfx: accelerated user interface that is highly portable.
+openjfx: JavaFX builds on top of JDK and is a standalone component.
+openjfx:
+openjfx: Homepage: https://openjfx.io/
+openjfx:
+openjfx:
