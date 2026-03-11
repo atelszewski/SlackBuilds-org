@@ -20,4 +20,8 @@ NOTE:
 
 - The source tarball has to be downloaded manually from the website.
   Choose STM32CubeIDE-Lnx package.
+- Unfortunately, ST site happens to change downloads names from time to
+  time. After being downloaded, the tarball has to follow the naming
+  scheme:
+    en.st-stm32cubeide_{VERSION}_amd64.sh.zip
 - udev rules for ST-LINK and J-Link are not installed.
