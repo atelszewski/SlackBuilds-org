@@ -1,0 +1,26 @@
+#!/bin/bash
+
+cd $(dirname $0) ; CWD=$(pwd)
+
+PRGNAM=kernel-firmware
+VERSION=${VERSION:-20260703_c95059a}
+ORIG_BUILD=1
+ORIG_TAG=
+BUILD=${BUILD:-1}
+TAG=${TAG:-_SBo}
+
+ARCH=noarch
+
+if [ ! -z "${PRINT_PACKAGE_NAME}" ]; then
+  echo "$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE"
+  exit 0
+fi
+
+OUTPUT=${OUTPUT:-/tmp}
+
+set -eu
+
+mkdir -p $OUTPUT
+
+cat $CWD/$PRGNAM-$VERSION-$ARCH-$ORIG_BUILD$ORIG_TAG.$PKGTYPE > \
+  $OUTPUT/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.$PKGTYPE
