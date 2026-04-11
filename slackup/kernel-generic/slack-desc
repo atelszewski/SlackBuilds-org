@@ -1,0 +1,11 @@
+kernel-generic: kernel-generic (general purpose Linux kernel/modules)
+kernel-generic:
+kernel-generic: This is a Linux kernel with built-in support for SATA, NVMe, and most
+kernel-generic: commonly used filesystems, as well as a large collection of loadable
+kernel-generic: kernel modules.
+kernel-generic:
+kernel-generic: It is recommended to use an initrd with this kernel for best results.
+kernel-generic: For more information about creating an initrd, see the README.initrd
+kernel-generic: file in the /boot directory.
+kernel-generic:
+kernel-generic:
