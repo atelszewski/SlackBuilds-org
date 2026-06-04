@@ -1,0 +1,11 @@
+wayland: wayland (Wayland display server)
+wayland:
+wayland: Wayland is protocol for a compositor to talk to its clients as well
+wayland: as a library implementation of the protocol. The compositor can be
+wayland: a standalone display server running on Linux kernel modesetting and
+wayland: evdev input devices, an X application, or a wayland client itself.
+wayland: The clients can be traditional applications, X servers (rootless or
+wayland: fullscreen) or other display servers.
+wayland:
+wayland: Homepage: https://wayland.freedesktop.org/
+wayland:
