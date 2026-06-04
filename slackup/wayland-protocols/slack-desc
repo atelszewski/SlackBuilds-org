@@ -1,0 +1,11 @@
+wayland-protocols: wayland-protocols (extended Wayland protocols)
+wayland-protocols:
+wayland-protocols: wayland-protocols contains Wayland protocols that add functionality
+wayland-protocols: not available in the Wayland core protocol. Such protocols either add
+wayland-protocols: completely new functionality, or extend the functionality of some
+wayland-protocols: other protocol either in Wayland core or in wayland-protocols.
+wayland-protocols:
+wayland-protocols: Homepage: https://wayland.freedesktop.org/
+wayland-protocols:
+wayland-protocols:
+wayland-protocols:
