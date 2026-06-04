@@ -1,0 +1,12 @@
+PRGNAM="python3-opt"
+VERSION="3.12.13"
+HOMEPAGE=""
+DOWNLOAD="https://slackware.nl/slackware/slackware64-current/source/d/python3/Python-3.12.13.tar.xz \
+          https://slackware.nl/slackware/slackware64-current/source/d/python3/python-3.12.13-docs-text.tar.bz2"
+MD5SUM="b67dc5d55b27c98a36615f7d0dfa6e4c \
+        e5d3a5288da5ea33cd222b8491038b36"
+DOWNLOAD_x86_64=""
+MD5SUM_x86_64=""
+REQUIRES=""
+MAINTAINER=""
+EMAIL=""
