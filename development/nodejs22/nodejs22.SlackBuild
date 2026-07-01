@@ -96,6 +96,18 @@ sed -i "s|math.h|cmath|" src/node_crypto.cc
 # Patch GCC 11.2 bug that prevents NodeJS 22 from building
 patch -p1 < $CWD/nodejs22_gcc11.2_bug.patch
 
+if [ "${LLVM_OPT:-ON}" = "ON" ]; then
+  export PATH="/opt/llvm-opt/bin:$PATH"
+  if [ -z "$LD_LIBRARY_PATH" ]; then
+    export LD_LIBRARY_PATH="/opt/llvm-opt/lib$LIBDIRSUFFIX"
+  else
+    export LD_LIBRARY_PATH="/opt/llvm-opt/lib$LIBDIRSUFFIX:$LD_LIBRARY_PATH"
+  fi
+fi
+
+export CC=clang
+export CXX=clang++
+
 ./configure \
   --prefix=/usr \
   --shared-zlib \
