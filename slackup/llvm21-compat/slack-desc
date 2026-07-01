@@ -1,0 +1,11 @@
+llvm21-compat: llvm21-compat (LLVM21 runtime libraries)
+llvm21-compat:
+llvm21-compat: This is a collection of libraries from LLVM21 to provide runtime
+llvm21-compat: support for binaries compiled against them.
+llvm21-compat:
+llvm21-compat:
+llvm21-compat:
+llvm21-compat:
+llvm21-compat:
+llvm21-compat:
+llvm21-compat:
