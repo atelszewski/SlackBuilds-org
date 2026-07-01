@@ -1,0 +1,11 @@
+llvm19-compat: llvm19-compat (LLVM19 runtime libraries)
+llvm19-compat:
+llvm19-compat: This is a collection of libraries from LLVM19 to provide runtime
+llvm19-compat: support for binaries compiled against them.
+llvm19-compat:
+llvm19-compat:
+llvm19-compat:
+llvm19-compat:
+llvm19-compat:
+llvm19-compat:
+llvm19-compat:
